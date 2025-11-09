@@ -23,17 +23,6 @@
         <url-pattern>/hello</url-pattern>
     </servlet-mapping>
 
-    <!-- User Controller Configuration -->
-    <servlet>
-        <servlet-name>UserController</servlet-name>
-        <servlet-class>controller.UserController</servlet-class>
-    </servlet>
-    
-    <servlet-mapping>
-        <servlet-name>UserController</servlet-name>
-        <url-pattern>/users</url-pattern>
-    </servlet-mapping>
-
     <!-- Error Page Configuration -->
     <error-page>
         <error-code>404</error-code>

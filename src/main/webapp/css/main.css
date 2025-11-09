@@ -82,7 +82,7 @@ body.bg-light {
 }
 
 .header-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #007bff;
     color: white;
     border-radius: 15px 15px 0 0;
     padding: 3rem 2rem;
@@ -109,7 +109,7 @@ body.bg-light {
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #007bff;
 }
 
 .info-label {
@@ -157,7 +157,7 @@ body.bg-light {
 
 /* Add user specific header */
 .add-user-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #7ebaff;
     color: white;
     border-radius: 10px 10px 0 0;
     padding: 2rem;
@@ -165,39 +165,41 @@ body.bg-light {
 
 /* Edit user specific header */
 .edit-user-header {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: #ffc107;
     color: white;
     border-radius: 10px 10px 0 0;
     padding: 2rem;
 }
 
 .form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .edit-form .form-control:focus {
-    border-color: #f093fb;
-    box-shadow: 0 0 0 0.2rem rgba(240, 147, 251, 0.25);
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #007bff;
     border: none;
 }
 
 .btn-primary:hover {
+    background: #0056b3;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .btn-warning {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: #ffc107;
     border: none;
     color: white;
 }
 
 .btn-warning:hover {
+    background: #e0a800;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     color: white;
@@ -211,7 +213,7 @@ body.bg-light {
 
 .user-info-card {
     background: #f8f9fa;
-    border-left: 4px solid #f093fb;
+    border-left: 4px solid #ffc107;
 }
 
 /* User list styles (userList.jsp) */
@@ -235,7 +237,7 @@ body.bg-light {
 }
 
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #007bff;
     color: white;
 }
 
@@ -304,7 +306,7 @@ body.bg-light {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(45deg, #007bff, #0056b3);
+    background: #007bff;
     color: white;
     font-weight: bold;
     margin-right: 10px;
@@ -319,7 +321,7 @@ body.bg-light {
 }
 
 .webinf-stats-card {
-    background: linear-gradient(45deg, #007bff, #0056b3);
+    background: #007bff;
     color: white;
     border-radius: 15px;
 }

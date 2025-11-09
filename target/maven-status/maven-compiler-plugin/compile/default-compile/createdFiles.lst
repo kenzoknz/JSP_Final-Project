@@ -1,6 +1,12 @@
-controller\UserController.class
+controller\DashboardServlet.class
+filter\AdminAuthorizationFilter.class
 config\DBConnection.class
-model\bo\UserBO.class
+controller\AdminController.class
+controller\LoginServlet.class
 model\bean\User.class
 model\dao\UserDAO.class
 servlet\HelloServlet.class
+controller\LogoutServlet.class
+model\bo\UserBO.class
+controller\RegisterServlet.class
+filter\AuthenticationFilter.class
