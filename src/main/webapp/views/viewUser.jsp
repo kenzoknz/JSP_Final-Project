@@ -9,66 +9,7 @@
     <title>Chi tiết User - JSP Final Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .user-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.1);
-        }
-        .header-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px 15px 0 0;
-            padding: 3rem 2rem;
-        }
-        .user-avatar {
-            width: 120px;
-            height: 120px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin: 0 auto 1rem;
-        }
-        .info-section {
-            padding: 2rem;
-        }
-        .info-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #667eea;
-        }
-        .info-label {
-            font-size: 0.875rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-        .info-value {
-            font-size: 1.1rem;
-            color: #495057;
-            font-weight: 500;
-        }
-        .actions-section {
-            background: #f8f9fa;
-            border-radius: 0 0 15px 15px;
-            padding: 2rem;
-            border-top: 1px solid #dee2e6;
-        }
-        .btn-group .btn {
-            margin: 0 5px;
-        }
-        .status-badge {
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -238,7 +179,7 @@
                                     
                                     <!-- Delete Button -->
                                     <form method="POST" action="${pageContext.request.contextPath}/users" 
-                                          style="display: inline-block;"
+                                          class="view-user-display-inline"
                                           onsubmit="return confirm('⚠️ CẢNH BÁO!\n\nBạn có chắc chắn muốn xóa user \'${user.username}\'?\n\nHành động này không thể hoàn tác!');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="${user.id}">

@@ -1,4 +1,4 @@
-package com.example.servlet;
+package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,23 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Simple Hello Servlet
- */
 public class HelloServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Set response content type
         response.setContentType("text/html;charset=UTF-8");
         
-        // Get the output stream
-        PrintWriter out = response.getWriter();
-        
-        try {
-            // Generate HTML response
+        try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -43,15 +35,12 @@ public class HelloServlet extends HttpServlet {
             out.println("<p><a href='" + request.getContextPath() + "'>Back to Home</a></p>");
             out.println("</body>");
             out.println("</html>");
-        } finally {
-            out.close();
         }
     }
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Handle POST requests the same way as GET for this simple example
         doGet(request, response);
     }
 }

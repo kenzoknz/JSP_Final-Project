@@ -1,7 +1,7 @@
-package com.example.model.dao;
+package model.dao;
 
-import com.example.config.DBConnection;
-import com.example.model.bean.User;
+import config.DBConnection;
+import model.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,23 +9,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object (DAO) for User entity
- * 
- * This class provides database operations for User objects including:
- * - CRUD operations (Create, Read, Update, Delete)
- * - Authentication related methods
- * - Search and filtering methods
- * 
- * Follows DAO pattern to separate data access logic from business logic.
- * 
- * @author JSP Final Project Team
- * @version 2.0 - Moved to model.dao package
- */
 public class UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
     
-    // SQL Queries
     private static final String INSERT_USER_SQL = 
         "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
     
@@ -53,12 +39,6 @@ public class UserDAO {
     private static final String LOGIN_SQL = 
         "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE email = ? AND password_hash = ?";
     
-    /**
-     * Insert a new user into database
-     * 
-     * @param user User object to insert
-     * @return Generated user ID if successful, -1 if failed
-     */
     public int insert(User user) {
         if (user == null) {
             logger.warn("Attempted to insert null user");
@@ -82,7 +62,7 @@ public class UserDAO {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int userId = generatedKeys.getInt(1);
-                    user.setId(userId); // Update the user object with generated ID
+                    user.setId(userId);
                     logger.info("User created successfully with ID: {}", userId);
                     return userId;
                 } else {
@@ -97,12 +77,6 @@ public class UserDAO {
         }
     }
     
-    /**
-     * Find user by email address
-     * 
-     * @param email Email address to search
-     * @return User object if found, null otherwise
-     */
     public User findByEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             logger.warn("Attempted to find user with null/empty email");
@@ -130,12 +104,6 @@ public class UserDAO {
         return null;
     }
     
-    /**
-     * Find user by username
-     * 
-     * @param username Username to search
-     * @return User object if found, null otherwise
-     */
     public User findByUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
             logger.warn("Attempted to find user with null/empty username");
@@ -163,12 +131,6 @@ public class UserDAO {
         return null;
     }
     
-    /**
-     * Find user by ID
-     * 
-     * @param id User ID
-     * @return User object if found, null otherwise
-     */
     public User findById(int id) {
         if (id <= 0) {
             logger.warn("Attempted to find user with invalid ID: {}", id);
@@ -196,13 +158,6 @@ public class UserDAO {
         return null;
     }
     
-    /**
-     * Authenticate user login
-     * 
-     * @param email User's email
-     * @param passwordHash Hashed password
-     * @return User object if login successful, null otherwise
-     */
     public User login(String email, String passwordHash) {
         if (email == null || passwordHash == null || 
             email.trim().isEmpty() || passwordHash.trim().isEmpty()) {
@@ -232,11 +187,6 @@ public class UserDAO {
         return null;
     }
     
-    /**
-     * Get all users from database
-     * 
-     * @return List of all users
-     */
     public List<User> listAll() {
         List<User> users = new ArrayList<>();
         
@@ -258,12 +208,6 @@ public class UserDAO {
         return users;
     }
     
-    /**
-     * Update user information
-     * 
-     * @param user User object with updated information
-     * @return true if update successful, false otherwise
-     */
     public boolean update(User user) {
         if (user == null || user.getId() <= 0) {
             logger.warn("Attempted to update invalid user");
@@ -294,12 +238,6 @@ public class UserDAO {
         }
     }
     
-    /**
-     * Delete user by ID
-     * 
-     * @param userId User ID to delete
-     * @return true if deletion successful, false otherwise
-     */
     public boolean delete(int userId) {
         if (userId <= 0) {
             logger.warn("Attempted to delete user with invalid ID: {}", userId);
@@ -327,11 +265,6 @@ public class UserDAO {
         }
     }
     
-    /**
-     * Get total number of users
-     * 
-     * @return Number of users in database
-     */
     public int getUserCount() {
         try (Connection connection = DBConnection.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(COUNT_USERS_SQL);
@@ -350,33 +283,14 @@ public class UserDAO {
         return 0;
     }
     
-    /**
-     * Check if email already exists
-     * 
-     * @param email Email to check
-     * @return true if email exists, false otherwise
-     */
     public boolean emailExists(String email) {
         return findByEmail(email) != null;
     }
     
-    /**
-     * Check if username already exists
-     * 
-     * @param username Username to check
-     * @return true if username exists, false otherwise
-     */
     public boolean usernameExists(String username) {
         return findByUsername(username) != null;
     }
     
-    /**
-     * Map ResultSet to User object
-     * 
-     * @param resultSet ResultSet from database query
-     * @return User object
-     * @throws SQLException if database error occurs
-     */
     private User mapResultSetToUser(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getInt("id"));

@@ -9,31 +9,7 @@
     <title>Quản lý Users - JSP Final Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .header-actions {
-            border-bottom: 3px solid #0d6efd;
-            padding-bottom: 1rem;
-        }
-        .user-card {
-            transition: transform 0.2s;
-            border-left: 4px solid #0d6efd;
-        }
-        .user-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .user-actions .btn {
-            margin: 0 2px;
-        }
-        .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .search-card {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -193,7 +169,7 @@
                                                 <th scope="col" class="text-center">
                                                     <i class="bi bi-calendar"></i> Ngày tạo
                                                 </th>
-                                                <th scope="col" class="text-center" style="width: 200px;">
+                                                <th scope="col" class="text-center user-list-actions-column">
                                                     <i class="bi bi-gear"></i> Thao tác
                                                 </th>
                                             </tr>
@@ -229,7 +205,7 @@
                                                         
                                                         <!-- Delete Button -->
                                                         <form method="POST" action="${pageContext.request.contextPath}/users" 
-                                                              style="display: inline-block;"
+                                                              class="user-list-delete-form"
                                                               onsubmit="return confirm('Bạn có chắc chắn muốn xóa user ${user.username}?');">
                                                             <input type="hidden" name="action" value="delete">
                                                             <input type="hidden" name="id" value="${user.id}">

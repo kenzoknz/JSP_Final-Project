@@ -1,7 +1,6 @@
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\model\dao\UserDAO.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\config\DBConnection.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\servlet\HelloServlet.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\model\bean\User.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\model\bo\UserBO.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\controller\UserController.java
-D:\Code\java\JSP_Final-Project\src\main\java\com\example\model\User.java
+d:\Code\java\JSP_Final-Project\src\main\java\model\bean\User.java
+d:\Code\java\JSP_Final-Project\src\main\java\config\DBConnection.java
+d:\Code\java\JSP_Final-Project\src\main\java\model\dao\UserDAO.java
+d:\Code\java\JSP_Final-Project\src\main\java\model\bo\UserBO.java
+d:\Code\java\JSP_Final-Project\src\main\java\controller\UserController.java
+d:\Code\java\JSP_Final-Project\src\main\java\servlet\HelloServlet.java

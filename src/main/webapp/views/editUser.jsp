@@ -8,42 +8,7 @@
     <title>Chỉnh sửa User - JSP Final Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .form-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        .header-section {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border-radius: 10px 10px 0 0;
-            padding: 2rem;
-        }
-        .form-control:focus {
-            border-color: #f093fb;
-            box-shadow: 0 0 0 0.2rem rgba(240, 147, 251, 0.25);
-        }
-        .btn-warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            color: white;
-        }
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            color: white;
-        }
-        .required-field::after {
-            content: "*";
-            color: red;
-            margin-left: 3px;
-        }
-        .user-info-card {
-            background: #f8f9fa;
-            border-left: 4px solid #f093fb;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -64,7 +29,7 @@
             <div class="col-lg-8">
                 <div class="form-container">
                     <!-- Header -->
-                    <div class="header-section text-center">
+                    <div class="header-section edit-user-header text-center">
                         <h1 class="h2 mb-0">
                             <i class="bi bi-pencil-square display-6"></i>
                         </h1>
@@ -112,7 +77,7 @@
                                 </c:if>
 
                                 <!-- Edit User Form -->
-                                <form method="POST" action="${pageContext.request.contextPath}/users" novalidate>
+                                <form method="POST" action="${pageContext.request.contextPath}/users" class="edit-form" novalidate>
                                     <input type="hidden" name="action" value="update">
                                     <input type="hidden" name="id" value="${user.id}">
                                     

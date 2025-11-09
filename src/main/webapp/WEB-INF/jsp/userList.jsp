@@ -9,50 +9,9 @@
     <title>${pageTitle} - JSP Final Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .table th {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        .status-badge {
-            font-size: 0.75rem;
-        }
-        .action-buttons {
-            white-space: nowrap;
-        }
-        .stats-card {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-            border-radius: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
-<body>
+<body class="webinf-body">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -80,7 +39,7 @@
                 <p class="text-muted">Manage users in the system - view, create, edit, and delete user accounts</p>
             </div>
             <div class="col-lg-4">
-                <div class="card stats-card">
+                <div class="card webinf-card webinf-stats-card">
                     <div class="card-body text-center">
                         <h3 class="card-title">
                             <i class="bi bi-person-plus"></i> ${userCount}
@@ -125,7 +84,7 @@
         </div>
 
         <!-- Users Table -->
-        <div class="card">
+        <div class="card webinf-card">
             <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-list"></i> Users List
@@ -136,7 +95,7 @@
                 <c:choose>
                     <c:when test="${empty users}">
                         <div class="text-center p-5">
-                            <i class="bi bi-person-x" style="font-size: 3rem; color: #ccc;"></i>
+                            <i class="bi bi-person-x user-list-no-users-icon"></i>
                             <h4 class="text-muted mt-3">No Users Found</h4>
                             <p class="text-muted">Start by adding your first user to the system.</p>
                             <button class="btn btn-primary" onclick="createUser()">
@@ -165,7 +124,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="user-avatar">
+                                                    <div class="webinf-user-avatar">
                                                         ${user.username.substring(0, 1).toUpperCase()}
                                                     </div>
                                                     <div>
@@ -190,7 +149,7 @@
                                                     <i class="bi bi-person-check"></i> Active
                                                 </span>
                                             </td>
-                                            <td class="action-buttons">
+                                            <td class="webinf-action-buttons">
                                                 <div class="btn-group" role="group">
                                                     <button type="button" class="btn btn-outline-primary btn-sm" 
                                                             onclick="viewUser(${user.id})" 

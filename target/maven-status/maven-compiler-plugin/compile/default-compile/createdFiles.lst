@@ -1,7 +1,6 @@
-com\example\config\DBConnection.class
-com\example\servlet\HelloServlet.class
-com\example\model\bo\UserBO.class
-com\example\model\bean\User.class
-com\example\model\dao\UserDAO.class
-com\example\model\User.class
-com\example\controller\UserController.class
+controller\UserController.class
+config\DBConnection.class
+model\bo\UserBO.class
+model\bean\User.class
+model\dao\UserDAO.class
+servlet\HelloServlet.class
