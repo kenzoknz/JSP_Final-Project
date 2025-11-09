@@ -91,15 +91,11 @@
                                 <div class="user-info-card p-3 mb-4">
                                     <h6><i class="bi bi-info-circle"></i> Thông tin hiện tại:</h6>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <small class="text-muted">ID:</small><br>
-                                            <strong>${user.id}</strong>
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <small class="text-muted">Username hiện tại:</small><br>
                                             <strong>${user.username}</strong>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <small class="text-muted">Email hiện tại:</small><br>
                                             <strong>${user.email}</strong>
                                         </div>

@@ -158,8 +158,8 @@ public class UserBO {
             return "User not found";
         }
         
-        // 2. Validate input
-        String validationError = validateUserInput(username, email, password);
+        // 2. Validate input (special validation for updates)
+        String validationError = validateUserInputForUpdate(username, email, password);
         if (validationError != null) {
             return validationError;
         }
@@ -338,6 +338,51 @@ public class UserBO {
         
         if (password.length() > 100) {
             return "Password must be less than 100 characters";
+        }
+        
+        return null; // All validations passed
+    }
+    
+    /**
+     * Validate user input for update operations (password is optional)
+     * 
+     * @param username Username
+     * @param email Email address
+     * @param password Password (can be null/empty to keep existing)
+     * @return Error message if validation fails, null if valid
+     */
+    private String validateUserInputForUpdate(String username, String email, String password) {
+        // Username validation
+        if (username == null || username.trim().isEmpty()) {
+            return "Username is required";
+        }
+        
+        if (username.length() < 3 || username.length() > 50) {
+            return "Username must be between 3 and 50 characters";
+        }
+        
+        if (!isValidUsername(username)) {
+            return "Username can only contain letters, numbers, and underscores";
+        }
+        
+        // Email validation
+        if (email == null || email.trim().isEmpty()) {
+            return "Email is required";
+        }
+        
+        if (!isValidEmail(email)) {
+            return "Invalid email format";
+        }
+        
+        // Password validation (OPTIONAL for updates)
+        if (password != null && !password.trim().isEmpty()) {
+            if (password.length() < 6) {
+                return "Password must be at least 6 characters long";
+            }
+            
+            if (password.length() > 100) {
+                return "Password must be less than 100 characters";
+            }
         }
         
         return null; // All validations passed

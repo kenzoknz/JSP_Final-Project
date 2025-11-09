@@ -87,6 +87,15 @@
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+                <!-- Success/Error Messages -->
+                <c:if test="${not empty message}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle"></i> 
+                        <strong>Thành công!</strong> ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+
                 <!-- Error Messages -->
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -136,18 +145,6 @@
                                 </h5>
                                 
                                 <div class="row">
-                                    <!-- User ID -->
-                                    <div class="col-md-6 mb-3">
-                                        <div class="info-item">
-                                            <div class="info-label">
-                                                <i class="bi bi-hash"></i> User ID
-                                            </div>
-                                            <div class="info-value">
-                                                #${user.id}
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <!-- Username -->
                                     <div class="col-md-6 mb-3">
                                         <div class="info-item">
@@ -161,7 +158,7 @@
                                     </div>
 
                                     <!-- Email -->
-                                    <div class="col-12 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <div class="info-item">
                                             <div class="info-label">
                                                 <i class="bi bi-envelope"></i> Địa chỉ Email
@@ -279,7 +276,7 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <small class="text-muted">
-                        <i class="bi bi-eye"></i> Xem chi tiết User #${user.id}
+                        <i class="bi bi-eye"></i> Xem chi tiết User - ${user.username}
                     </small>
                 </div>
             </div>

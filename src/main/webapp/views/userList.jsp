@@ -184,9 +184,6 @@
                                     <table class="table table-hover mb-0">
                                         <thead class="table-light">
                                             <tr>
-                                                <th scope="col" class="text-center" style="width: 80px;">
-                                                    <i class="bi bi-hash"></i> ID
-                                                </th>
                                                 <th scope="col">
                                                     <i class="bi bi-person"></i> Username
                                                 </th>
@@ -204,9 +201,6 @@
                                         <tbody>
                                             <c:forEach var="user" items="${users}">
                                                 <tr>
-                                                    <td class="text-center">
-                                                        <span class="badge bg-secondary">${user.id}</span>
-                                                    </td>
                                                     <td>
                                                         <strong>${user.username}</strong>
                                                     </td>

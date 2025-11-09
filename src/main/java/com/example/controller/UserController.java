@@ -272,7 +272,7 @@ public class UserController extends HttpServlet {
         String password = request.getParameter("password");
         
         if (idParam == null || idParam.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
+            response.sendRedirect(request.getContextPath() + "/users?error=User ID is required");
             return;
         }
         
@@ -284,17 +284,21 @@ public class UserController extends HttpServlet {
             
             if ("SUCCESS".equals(result)) {
                 logger.info("User updated successfully: ID {}", userId);
-                request.setAttribute("success", "User updated successfully!");
-                response.sendRedirect(request.getContextPath() + "/users?action=view&id=" + userId);
+                response.sendRedirect(request.getContextPath() + "/users?action=view&id=" + userId + "&message=User updated successfully!");
             } else {
                 logger.error("Failed to update user: ID {} - {}", userId, result);
+                
+                // Get user data for form
+                User user = userBO.getUserById(userId);
+                request.setAttribute("user", user);
                 request.setAttribute("error", result);
-                response.sendRedirect(request.getContextPath() + "/users");
+                
+                request.getRequestDispatcher("/views/editUser.jsp").forward(request, response);
             }
             
         } catch (NumberFormatException e) {
             logger.warn("Invalid user ID format: {}", idParam);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID format");
+            response.sendRedirect(request.getContextPath() + "/users?error=Invalid user ID format");
         }
     }
     
