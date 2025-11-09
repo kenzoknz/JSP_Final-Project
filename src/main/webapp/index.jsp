@@ -68,6 +68,7 @@
         
         <div>
             <a href="<%= request.getContextPath() %>/hello" class="btn">Go to Hello Servlet</a>
+            <a href="<%= request.getContextPath() %>/users" class="btn">User Management</a>
         </div>
         
         <div class="info">

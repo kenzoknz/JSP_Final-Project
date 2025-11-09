@@ -23,4 +23,26 @@
         <url-pattern>/hello</url-pattern>
     </servlet-mapping>
 
+    <!-- User Controller Configuration -->
+    <servlet>
+        <servlet-name>UserController</servlet-name>
+        <servlet-class>com.example.controller.UserController</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>UserController</servlet-name>
+        <url-pattern>/users</url-pattern>
+    </servlet-mapping>
+
+    <!-- Error Page Configuration -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
+    
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
+
 </web-app>
