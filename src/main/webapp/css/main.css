@@ -1,0 +1,339 @@
+/* Main stylesheet for JSP Final Project */
+
+/* Common styles */
+body.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+/* Navigation styles */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Home page styles (index.jsp) */
+.home-body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.home-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+}
+
+.home-container h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.home-container p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.home-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 10px;
+}
+
+.home-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.home-info {
+    background-color: #e9f7ff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 30px;
+    border-left: 4px solid #007bff;
+}
+
+.home-time {
+    color: #999;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+/* User view styles (viewUser.jsp) */
+.user-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.1);
+}
+
+.header-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 3rem 2rem;
+}
+
+.user-avatar {
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto 1rem;
+}
+
+.info-section {
+    padding: 2rem;
+}
+
+.info-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #667eea;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.actions-section {
+    background: #f8f9fa;
+    border-radius: 0 0 15px 15px;
+    padding: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.btn-group .btn {
+    margin: 0 5px;
+}
+
+.status-badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+/* View user specific inline styles */
+.view-user-display-inline {
+    display: inline-block;
+}
+
+/* Form styles (addUser.jsp, editUser.jsp) */
+.form-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* Add user specific header */
+.add-user-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    padding: 2rem;
+}
+
+/* Edit user specific header */
+.edit-user-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    padding: 2rem;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.edit-form .form-control:focus {
+    border-color: #f093fb;
+    box-shadow: 0 0 0 0.2rem rgba(240, 147, 251, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    color: white;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.required-field::after {
+    content: "*";
+    color: red;
+    margin-left: 3px;
+}
+
+.user-info-card {
+    background: #f8f9fa;
+    border-left: 4px solid #f093fb;
+}
+
+/* User list styles (userList.jsp) */
+.header-actions {
+    border-bottom: 3px solid #0d6efd;
+    padding-bottom: 1rem;
+}
+
+.user-card.list-view {
+    transition: transform 0.2s;
+    border-left: 4px solid #0d6efd;
+}
+
+.user-card.list-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.user-actions .btn {
+    margin: 0 2px;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.search-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* User list specific inline styles */
+.user-list-no-users-icon {
+    font-size: 3rem; 
+    color: #ccc;
+}
+
+.user-list-actions-column {
+    width: 200px;
+}
+
+.user-list-delete-form {
+    display: inline-block;
+}
+
+/* Error page styles (error.jsp) */
+.error-body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.error-container {
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 5rem;
+    color: #dc3545;
+}
+
+/* WEB-INF userList.jsp specific styles */
+.webinf-body {
+    background-color: #f8f9fa;
+}
+
+.webinf-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.webinf-table th {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.webinf-btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.webinf-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.webinf-status-badge {
+    font-size: 0.75rem;
+}
+
+.webinf-action-buttons {
+    white-space: nowrap;
+}
+
+.webinf-stats-card {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 15px;
+}
+
+/* Utility classes for transitions and animations */
+.smooth-transition {
+    transition: all 0.3s ease;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .actions-section,
+    .btn {
+        display: none !important;
+    }
+}
