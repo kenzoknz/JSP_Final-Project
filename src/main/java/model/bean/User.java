@@ -9,6 +9,7 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
+    private String role;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     
@@ -22,14 +23,16 @@ public class User {
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.role = "user";
     }
     
     public User(int id, String username, String email, String passwordHash, 
-                Timestamp createdAt, Timestamp updatedAt) {
+                String role, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -69,6 +72,15 @@ public class User {
         updateTimestamp();
     }
     
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+        updateTimestamp();
+    }
+    
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -95,6 +107,14 @@ public class User {
     
     public String getDisplayName() {
         return username != null ? username : email;
+    }
+    
+    public boolean isAdmin() {
+        return "admin".equals(role);
+    }
+    
+    public boolean isUser() {
+        return "user".equals(role);
     }
     
     @Override
@@ -125,6 +145,6 @@ public class User {
     }
     
     public User copy() {
-        return new User(id, username, email, passwordHash, createdAt, updatedAt);
+        return new User(id, username, email, passwordHash, role, createdAt, updatedAt);
     }
 }

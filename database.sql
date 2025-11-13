@@ -21,6 +21,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin','user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -32,11 +33,11 @@ CREATE INDEX idx_users_email ON users(email);
 -- ====================================================
 -- Insert sample data for testing
 -- ====================================================
-INSERT INTO users (username, email, password_hash) VALUES
-('admin', 'admin@example.com', SHA2('admin123', 256)),
-('john_doe', 'john@example.com', SHA2('password123', 256)),
-('jane_smith', 'jane@example.com', SHA2('mypassword', 256)),
-('test_user', 'test@example.com', SHA2('test123', 256));
+INSERT INTO users (username, email, password_hash, role) VALUES
+('admin', 'admin@example.com', SHA2('admin123', 256), 'admin'),
+('john_doe', 'john@example.com', SHA2('password123', 256), 'user'),
+('jane_smith', 'jane@example.com', SHA2('mypassword', 256), 'user'),
+('test_user', 'test@example.com', SHA2('test123', 256), 'user');
 
 -- ====================================================
 -- Verify data
@@ -44,7 +45,8 @@ INSERT INTO users (username, email, password_hash) VALUES
 SELECT 
     id, 
     username, 
-    email, 
+    email,
+    role,
     created_at 
 FROM users;
 

@@ -13,22 +13,22 @@ public class UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
     
     private static final String INSERT_USER_SQL = 
-        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+        "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)";
     
     private static final String SELECT_USER_BY_ID_SQL = 
-        "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE id = ?";
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE id = ?";
     
     private static final String SELECT_USER_BY_EMAIL_SQL = 
-        "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE email = ?";
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE email = ?";
     
     private static final String SELECT_USER_BY_USERNAME_SQL = 
-        "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE username = ?";
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE username = ?";
     
     private static final String SELECT_ALL_USERS_SQL = 
-        "SELECT id, username, email, password_hash, created_at, updated_at FROM users ORDER BY created_at DESC";
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users ORDER BY created_at DESC";
     
     private static final String UPDATE_USER_SQL = 
-        "UPDATE users SET username = ?, email = ?, password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+        "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
     
     private static final String DELETE_USER_SQL = 
         "DELETE FROM users WHERE id = ?";
@@ -37,7 +37,10 @@ public class UserDAO {
         "SELECT COUNT(*) FROM users";
     
     private static final String LOGIN_SQL = 
-        "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE email = ? AND password_hash = ?";
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE (username = ? OR email = ?) AND password_hash = ?";
+    
+    private static final String LOGIN_BY_EMAIL_SQL = 
+        "SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE email = ? AND password_hash = ?";
     
     public int insert(User user) {
         if (user == null) {
@@ -51,6 +54,7 @@ public class UserDAO {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
+            statement.setString(4, user.getRole());
             
             int affectedRows = statement.executeUpdate();
             
@@ -158,9 +162,9 @@ public class UserDAO {
         return null;
     }
     
-    public User login(String email, String passwordHash) {
-        if (email == null || passwordHash == null || 
-            email.trim().isEmpty() || passwordHash.trim().isEmpty()) {
+    public User login(String usernameOrEmail, String passwordHash) {
+        if (usernameOrEmail == null || passwordHash == null || 
+            usernameOrEmail.trim().isEmpty() || passwordHash.trim().isEmpty()) {
             logger.warn("Login attempted with null/empty credentials");
             return null;
         }
@@ -168,22 +172,23 @@ public class UserDAO {
         try (Connection connection = DBConnection.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(LOGIN_SQL)) {
             
-            statement.setString(1, email.trim());
-            statement.setString(2, passwordHash.trim());
+            statement.setString(1, usernameOrEmail.trim());
+            statement.setString(2, usernameOrEmail.trim());
+            statement.setString(3, passwordHash.trim());
             
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     User user = mapResultSetToUser(resultSet);
-                    logger.info("Login successful for user: {}", email);
+                    logger.info("Login successful for user: {}", usernameOrEmail);
                     return user;
                 }
             }
             
         } catch (SQLException e) {
-            logger.error("Error during login for user: {}", email, e);
+            logger.error("Error during login for user: {}", usernameOrEmail, e);
         }
         
-        logger.warn("Login failed for user: {}", email);
+        logger.warn("Login failed for user: {}", usernameOrEmail);
         return null;
     }
     
@@ -220,7 +225,8 @@ public class UserDAO {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
-            statement.setInt(4, user.getId());
+            statement.setString(4, user.getRole());
+            statement.setInt(5, user.getId());
             
             int affectedRows = statement.executeUpdate();
             
@@ -297,6 +303,7 @@ public class UserDAO {
         user.setUsername(resultSet.getString("username"));
         user.setEmail(resultSet.getString("email"));
         user.setPasswordHash(resultSet.getString("password_hash"));
+        user.setRole(resultSet.getString("role"));
         user.setCreatedAt(resultSet.getTimestamp("created_at"));
         user.setUpdatedAt(resultSet.getTimestamp("updated_at"));
         return user;

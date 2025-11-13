@@ -48,6 +48,10 @@ public class UserBO {
     }
 
     public String createUser(String username, String email, String password) {
+        return createUser(username, email, password, "user");
+    }
+    
+    public String createUser(String username, String email, String password, String role) {
         logger.debug("Business layer: Creating user: {}", email);
 
         String validationError = validateUserInput(username, email, password);
@@ -69,11 +73,18 @@ public class UserBO {
         }
 
         User user = new User(username, email, hashedPassword);
+        
+        // Set role if provided, default to "user"
+        if (role != null && !role.trim().isEmpty()) {
+            user.setRole(role.trim().toLowerCase());
+        } else {
+            user.setRole("user");
+        }
 
         int userId = userDAO.insert(user);
 
         if (userId > 0) {
-            logger.info("Business layer: User created successfully with ID: {}", userId);
+            logger.info("Business layer: User created successfully with ID: {} and role: {}", userId, user.getRole());
             return "SUCCESS";
         } else {
             logger.error("Business layer: Failed to create user: {}", email);
@@ -82,6 +93,10 @@ public class UserBO {
     }
 
     public String updateUser(int userId, String username, String email, String password) {
+        return updateUser(userId, username, email, password, null);
+    }
+    
+    public String updateUser(int userId, String username, String email, String password, String role) {
         logger.debug("Business layer: Updating user ID: {}", userId);
 
         User existingUser = userDAO.findById(userId);
@@ -113,6 +128,10 @@ public class UserBO {
                 return "Password processing failed";
             }
             existingUser.setPasswordHash(hashedPassword);
+        }
+        
+        if (role != null && ("admin".equals(role) || "user".equals(role))) {
+            existingUser.setRole(role);
         }
 
         boolean updated = userDAO.update(existingUser);
@@ -156,17 +175,12 @@ public class UserBO {
         return deleted;
     }
 
-    public User authenticateUser(String email, String password) {
-        logger.debug("Business layer: Authenticating user: {}", email);
+    public User authenticateUser(String usernameOrEmail, String password) {
+        logger.debug("Business layer: Authenticating user: {}", usernameOrEmail);
 
-        if (email == null || password == null ||
-            email.trim().isEmpty() || password.trim().isEmpty()) {
+        if (usernameOrEmail == null || password == null ||
+            usernameOrEmail.trim().isEmpty() || password.trim().isEmpty()) {
             logger.warn("Business layer: Empty credentials provided");
-            return null;
-        }
-
-        if (!isValidEmail(email)) {
-            logger.warn("Business layer: Invalid email format for authentication: {}", email);
             return null;
         }
 
@@ -176,12 +190,12 @@ public class UserBO {
             return null;
         }
 
-        User user = userDAO.login(email, hashedPassword);
+        User user = userDAO.login(usernameOrEmail, hashedPassword);
 
         if (user != null) {
-            logger.info("Business layer: Authentication successful for user: {}", email);
+            logger.info("Business layer: Authentication successful for user: {}", usernameOrEmail);
         } else {
-            logger.warn("Business layer: Authentication failed for user: {}", email);
+            logger.warn("Business layer: Authentication failed for user: {}", usernameOrEmail);
         }
 
         return user;
