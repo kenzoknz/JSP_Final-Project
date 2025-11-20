@@ -13,7 +13,7 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/dashboard.jsp">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/users">
                 <i class="bi bi-shield-check"></i> Admin Panel
             </a>
             <div class="navbar-nav ms-auto">

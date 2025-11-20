@@ -40,7 +40,7 @@ public class AdminController extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         if (!currentUser.isAdmin()) {
             logger.warn("Non-admin user attempted to access admin area: {}", currentUser.getUsername());
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            response.sendRedirect(request.getContextPath() + "/submit.jsp");
             return;
         }
         
@@ -83,7 +83,7 @@ public class AdminController extends HttpServlet {
         
         User currentUser = (User) session.getAttribute("user");
         if (!currentUser.isAdmin()) {
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            response.sendRedirect(request.getContextPath() + "/submit.jsp");
             return;
         }
         

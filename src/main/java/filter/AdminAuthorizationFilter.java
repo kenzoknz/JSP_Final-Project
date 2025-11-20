@@ -50,7 +50,7 @@ public class AdminAuthorizationFilter implements Filter {
         
         if (!user.isAdmin()) {
             logger.warn("Non-admin user attempted to access admin area: {} ({})", user.getUsername(), requestURI);
-            httpResponse.sendRedirect(contextPath + "/dashboard?error=Access denied. Admin privileges required.");
+            httpResponse.sendRedirect(contextPath + "/submit.jsp?error=Access denied. Admin privileges required.");
             return;
         }
         

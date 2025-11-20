@@ -31,6 +31,30 @@ CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
 
 -- ====================================================
+-- Table: jobs (for PDF conversion tracking)
+-- ====================================================
+CREATE TABLE jobs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    type VARCHAR(10) NOT NULL COMMENT 'File type: docx, xlsx, txt',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT 'Status: PENDING, IN_PROGRESS, COMPLETED, FAILED',
+    input_path VARCHAR(500) NOT NULL COMMENT 'Path to uploaded file',
+    output_path VARCHAR(500) COMMENT 'Path to converted PDF file',
+    original_filename VARCHAR(255) NOT NULL COMMENT 'Original filename from user',
+    file_size BIGINT NOT NULL COMMENT 'File size in bytes',
+    error_message TEXT COMMENT 'Error message if conversion failed',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL DEFAULT NULL COMMENT 'When conversion started',
+    finished_at TIMESTAMP NULL DEFAULT NULL COMMENT 'When conversion finished',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Add indexes for jobs table
+CREATE INDEX idx_jobs_user_id ON jobs(user_id);
+CREATE INDEX idx_jobs_status ON jobs(status);
+CREATE INDEX idx_jobs_created_at ON jobs(created_at DESC);
+
+-- ====================================================
 -- Insert sample data for testing
 -- ====================================================
 INSERT INTO users (username, email, password_hash, role) VALUES
