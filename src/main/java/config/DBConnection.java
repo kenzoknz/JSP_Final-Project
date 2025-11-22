@@ -17,7 +17,7 @@ public class DBConnection {
     
     private HikariDataSource dataSource;
     
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/projectdb?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/projectdb";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "123456";
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";

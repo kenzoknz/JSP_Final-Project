@@ -27,8 +27,8 @@
                     </h6>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="<%=request.getContextPath()%>/dashboard">
-                                <i class="bi bi-house-door me-2"></i>Dashboard
+                            <a class="nav-link" href="<%=request.getContextPath()%>/submit.jsp">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Convert
                             </a>
                         </li>
                         <li class="nav-item">

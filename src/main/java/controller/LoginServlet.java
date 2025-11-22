@@ -30,14 +30,10 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession(false);
+            HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            if (user.isAdmin()) {
-                response.sendRedirect(request.getContextPath() + "/admin/users");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/dashboard");
-            }
+            response.sendRedirect(request.getContextPath() + "/submit.jsp");
             return;
         }
         
@@ -72,11 +68,8 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("userRole", user.getRole());
             session.setMaxInactiveInterval(30 * 60); // 30 minutes
             
-            if (user.isAdmin()) {
-                response.sendRedirect(request.getContextPath() + "/admin/users");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/dashboard");
-            }
+            // Redirect to convert page for all users
+            response.sendRedirect(request.getContextPath() + "/submit.jsp");
         } else {
             logger.warn("Login failed for user: {}", usernameOrEmail);
             request.setAttribute("error", "Invalid username/email or password");

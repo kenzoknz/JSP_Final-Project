@@ -10,7 +10,7 @@
     
     model.bean.User currentUser = (model.bean.User) session.getAttribute("user");
     if (!currentUser.isAdmin()) {
-        response.sendRedirect(request.getContextPath() + "/dashboard");
+        response.sendRedirect(request.getContextPath() + "/submit.jsp");
         return;
     }
 %>
@@ -28,7 +28,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/submit.jsp">
                 <i class="bi bi-shield-check me-2"></i>Admin Panel
             </a>
             
@@ -39,13 +39,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/dashboard">
-                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        <a class="nav-link active" href="${pageContext.request.contextPath}/admin/users">
+                            <i class="bi bi-people me-1"></i>User Management
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="${pageContext.request.contextPath}/admin/users">
-                            <i class="bi bi-people me-1"></i>User Management
+                        <a class="nav-link" href="${pageContext.request.contextPath}/submit.jsp">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Convert
                         </a>
                     </li>
                 </ul>
@@ -59,10 +59,6 @@
                             <span class="badge bg-danger ms-1">ADMIN</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/dashboard">
-                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
                                 <i class="bi bi-box-arrow-right me-2"></i>Logout
                             </a></li>
