@@ -9,26 +9,22 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-// Load Vietnamese-compatible fonts for PDFBox
 public class VietnameseFontLoader {
     private static final Logger logger = LoggerFactory.getLogger(VietnameseFontLoader.class);
     
-    // Common Windows font paths for Vietnamese support
     private static final String[] VIETNAMESE_FONT_PATHS = {
-        "C:/Windows/Fonts/times.ttf",           // Times New Roman (prioritized)
-        "C:/Windows/Fonts/timesbd.ttf",         // Times New Roman Bold
-        "C:/Windows/Fonts/arial.ttf",           // Arial
-        "C:/Windows/Fonts/arialuni.ttf",        // Arial Unicode MS (best for Vietnamese)
-        "C:/Windows/Fonts/tahoma.ttf",          // Tahoma
-        "C:/Windows/Fonts/calibri.ttf",         // Calibri
-        "C:/Windows/Fonts/verdana.ttf"          // Verdana
+        "C:/Windows/Fonts/times.ttf",
+        "C:/Windows/Fonts/timesbd.ttf",
+        "C:/Windows/Fonts/arial.ttf",
+        "C:/Windows/Fonts/arialuni.ttf",
+        "C:/Windows/Fonts/tahoma.ttf",
+        "C:/Windows/Fonts/calibri.ttf",
+        "C:/Windows/Fonts/verdana.ttf"
     };
     
-    // Load Vietnamese-compatible font, try multiple fonts
     public static PDType0Font loadVietnameseFont(PDDocument document) throws IOException {
         logger.info("Loading Vietnamese-compatible font...");
         
-        // Try each font path in order
         for (String fontPath : VIETNAMESE_FONT_PATHS) {
             File fontFile = new File(fontPath);
             if (fontFile.exists() && fontFile.canRead()) {
@@ -42,7 +38,6 @@ public class VietnameseFontLoader {
             }
         }
         
-        // Try to load from custom environment variable
         String customFontPath = System.getenv("VIETNAMESE_FONT_PATH");
         if (customFontPath != null) {
             File customFont = new File(customFontPath);
@@ -57,7 +52,6 @@ public class VietnameseFontLoader {
             }
         }
         
-        // Try to load from classpath (fallback)
         try {
             InputStream fontStream = VietnameseFontLoader.class.getResourceAsStream("/fonts/arial.ttf");
             if (fontStream != null) {
@@ -75,7 +69,6 @@ public class VietnameseFontLoader {
         );
     }
     
-    // Load font from specific path
     public static PDType0Font loadFontFromPath(PDDocument document, String fontPath) throws IOException {
         File fontFile = new File(fontPath);
         if (!fontFile.exists()) {
@@ -84,14 +77,12 @@ public class VietnameseFontLoader {
         return PDType0Font.load(document, fontFile);
     }
     
-    // Check if font supports Vietnamese
     public static boolean supportsVietnamese(String fontPath) {
         File fontFile = new File(fontPath);
         if (!fontFile.exists()) {
             return false;
         }
         
-        // Check if it's Arial Unicode MS or other known Vietnamese fonts
         String fileName = fontFile.getName().toLowerCase();
         return fileName.contains("arial") || 
                fileName.contains("times") || 

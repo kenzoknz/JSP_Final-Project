@@ -11,7 +11,6 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.io.File;
 
-// Manage background job processing lifecycle
 @WebListener
 public class ApplicationLifecycleListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleListener.class);
@@ -19,9 +18,8 @@ public class ApplicationLifecycleListener implements ServletContextListener {
     private static final String WORKER_ATTRIBUTE = "jobQueueWorker";
     private static final String OUTPUT_DIR = "converted";
     
-    // Worker configuration - Optimized for better throughput
-    private static final int POLLING_INTERVAL_SECONDS = 3; // Check queue every 3 seconds (faster polling)
-    private static final int MAX_CONCURRENT_JOBS = 6; // Process up to 6 jobs concurrently (increased from 3)
+    private static final int POLLING_INTERVAL_SECONDS = 3;
+    private static final int MAX_CONCURRENT_JOBS = 6;
     
     private JobQueueWorker worker;
     
@@ -33,20 +31,16 @@ public class ApplicationLifecycleListener implements ServletContextListener {
         logger.info("Initializing job queue worker...");
         
         try {
-            // Get output directory path
             String outputPath = context.getRealPath("") + File.separator + OUTPUT_DIR;
             
-            // Ensure output directory exists
             File outputDir = new File(outputPath);
             if (!outputDir.exists()) {
                 outputDir.mkdirs();
                 logger.info("Created output directory: {}", outputPath);
             }
             
-            // Create JobService
             JobService jobService = new JobService();
             
-            // Create and start worker
             worker = new JobQueueWorker(
                 jobService,
                 outputPath,
@@ -56,7 +50,6 @@ public class ApplicationLifecycleListener implements ServletContextListener {
             
             worker.start();
             
-            // Store worker in servlet context for access by other components
             context.setAttribute(WORKER_ATTRIBUTE, worker);
             
             logger.info("Job queue worker started successfully");
@@ -89,7 +82,6 @@ public class ApplicationLifecycleListener implements ServletContextListener {
         logger.info("=== Application Stopped ===");
     }
     
-    // Get worker from servlet context
     public static JobQueueWorker getWorker(ServletContext context) {
         return (JobQueueWorker) context.getAttribute(WORKER_ATTRIBUTE);
     }

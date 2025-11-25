@@ -2,15 +2,8 @@ package model.bean;
 
 import java.sql.Timestamp;
 
-/**
- * Job model for tracking file conversion jobs
- * Represents the jobs table in database
- */
 public class Job {
     
-    /**
-     * Job status enum matching database ENUM type
-     */
     public enum JobStatus {
         PENDING("PENDING"),
         IN_PROGRESS("IN_PROGRESS"),
@@ -33,14 +26,13 @@ public class Job {
                     return status;
                 }
             }
-            return PENDING; // Default fallback
+            return PENDING;
         }
     }
     
-    // Fields matching database schema
     private int id;
     private int userId;
-    private String type; // DOCX, XLSX, TXT
+    private String type;
     private JobStatus status;
     private String inputPath;
     private String outputPath;
@@ -51,7 +43,6 @@ public class Job {
     private Timestamp startedAt;
     private Timestamp finishedAt;
     
-    // Constructors
     public Job() {}
     
     public Job(int userId, String type, String inputPath, String originalFilename, long fileSize) {
@@ -64,7 +55,6 @@ public class Job {
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
     
-    // Getters and Setters
     public int getId() {
         return id;
     }

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// API endpoint to check job status via AJAX
 @WebServlet("/api/job-status")
 public class JobStatusServlet extends HttpServlet {
     
@@ -33,7 +32,6 @@ public class JobStatusServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
-        // Get job ID parameter
         String jobIdParam = request.getParameter("jobId");
         
         if (jobIdParam == null || jobIdParam.trim().isEmpty()) {
@@ -45,7 +43,6 @@ public class JobStatusServlet extends HttpServlet {
         try {
             long jobId = Long.parseLong(jobIdParam);
             
-            // Get job from database
             Job job = jobDAO.getJobById((int) jobId);
             
             if (job == null) {
@@ -54,7 +51,6 @@ public class JobStatusServlet extends HttpServlet {
                 return;
             }
             
-            // Build JSON response
             StringBuilder json = new StringBuilder();
             json.append("{");
             json.append("\"jobId\":").append(job.getId()).append(",");
@@ -75,7 +71,6 @@ public class JobStatusServlet extends HttpServlet {
                 json.append("\"outputFilePath\":\"").append(escapeJson(job.getOutputPath())).append("\",");
             }
             
-            // Calculate progress percentage
             int progress = calculateProgress(job);
             json.append("\"progress\":").append(progress);
             
@@ -96,13 +91,12 @@ public class JobStatusServlet extends HttpServlet {
         }
     }
     
-    // Calculate progress percentage
     private int calculateProgress(Job job) {
         switch (job.getStatus()) {
             case PENDING:
                 return 0;
             case IN_PROGRESS:
-                return 50; // Can be enhanced with real-time progress tracking
+                return 50;
             case COMPLETED:
                 return 100;
             case FAILED:
@@ -112,7 +106,6 @@ public class JobStatusServlet extends HttpServlet {
         }
     }
     
-    // Escape JSON special characters
     private String escapeJson(String value) {
         if (value == null) {
             return "";

@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #6B7FD7; /* Solid color */
+    background: #f5f5f5;
     min-height: 100vh;
     padding: 20px;
 }
@@ -16,9 +16,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    padding: 40px;
+    border: 1px solid #ddd;
+    padding: 30px;
 }
 
 h1 {
@@ -41,34 +40,31 @@ h1 {
 }
 
 .btn {
-    padding: 12px 24px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
     text-decoration: none;
     display: inline-block;
 }
 
 .btn-primary {
-    background: #6B7FD7;
+    background: #2196F3;
     color: white;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(107, 127, 215, 0.4);
+    background: #1976D2;
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background: #757575;
     color: white;
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
+    background: #616161;
 }
 
 .btn-danger {
@@ -108,20 +104,20 @@ h1 {
 
 .alert {
     padding: 15px;
-    border-radius: 5px;
     margin-bottom: 20px;
+    border-left: 3px solid;
 }
 
 .alert-error {
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    color: #721c24;
+    background: #ffebee;
+    border-color: #f44336;
+    color: #c62828;
 }
 
 .alert-success {
-    background: #d4edda;
-    border: 1px solid #c3e6cb;
-    color: #155724;
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
 }
 
 .jobs-table {
@@ -131,51 +127,55 @@ h1 {
 }
 
 .jobs-table thead {
-    background: #6B7FD7;
+    background: #2196F3;
     color: white;
 }
 
 .jobs-table th {
-    padding: 15px;
+    padding: 12px;
     text-align: left;
     font-weight: 600;
 }
 
 .jobs-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
 }
 
 .jobs-table tbody tr:hover {
-    background: #f8f9fa;
+    background: #f5f5f5;
 }
 
 .status-badge {
-    padding: 5px 12px;
-    border-radius: 20px;
+    padding: 4px 10px;
     font-size: 12px;
     font-weight: 600;
     display: inline-block;
+    border: 1px solid;
 }
 
 .status-pending {
-    background: #fff3cd;
-    color: #856404;
+    background: #fff9c4;
+    border-color: #fbc02d;
+    color: #f57f17;
 }
 
 .status-in-progress {
-    background: #cce5ff;
-    color: #004085;
+    background: #bbdefb;
+    border-color: #2196f3;
+    color: #0d47a1;
 }
 
 .status-completed {
-    background: #d4edda;
-    color: #155724;
+    background: #c8e6c9;
+    border-color: #4caf50;
+    color: #1b5e20;
 }
 
 .status-failed {
-    background: #f8d7da;
-    color: #721c24;
+    background: #ffcdd2;
+    border-color: #f44336;
+    color: #b71c1c;
 }
 
 .empty-state {
@@ -198,9 +198,8 @@ h1 {
 }
 
 .file-type {
-    background: #e9ecef;
+    background: #e0e0e0;
     padding: 4px 8px;
-    border-radius: 4px;
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
