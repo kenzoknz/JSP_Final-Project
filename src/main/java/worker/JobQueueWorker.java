@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.*;
 
-// Background worker for processing queued conversion jobs - Optimized
 public class JobQueueWorker {
     private static final Logger logger = LoggerFactory.getLogger(JobQueueWorker.class);
     
@@ -19,13 +18,11 @@ public class JobQueueWorker {
     private final int pollingIntervalSeconds;
     private final int maxConcurrentJobs;
     
-    // Timeout for individual job processing (10 minutes)
     private static final long JOB_TIMEOUT_MINUTES = 10;
     
     private volatile boolean running = false;
     private final ConcurrentHashMap<Integer, Future<?>> runningJobs = new ConcurrentHashMap<>();
     
-    // Create new job queue worker with optimized thread pools
     public JobQueueWorker(JobService jobService, String outputDirectory, 
                           int pollingIntervalSeconds, int maxConcurrentJobs) {
         this.jobService = jobService;
@@ -33,23 +30,20 @@ public class JobQueueWorker {
         this.pollingIntervalSeconds = pollingIntervalSeconds;
         this.maxConcurrentJobs = maxConcurrentJobs;
         
-        // Separate scheduler for polling (1 thread) and processing pool for jobs
         this.scheduler = Executors.newScheduledThreadPool(1);
         
-        // Use ThreadPoolExecutor with bounded queue for better resource management
         this.processingPool = new ThreadPoolExecutor(
-            maxConcurrentJobs, // core pool size
-            maxConcurrentJobs * 2, // max pool size
-            60L, TimeUnit.SECONDS, // keep-alive time
-            new LinkedBlockingQueue<>(100), // bounded queue
-            new ThreadPoolExecutor.CallerRunsPolicy() // rejection policy
+            maxConcurrentJobs,
+            maxConcurrentJobs * 2,
+            60L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(100),
+            new ThreadPoolExecutor.CallerRunsPolicy()
         );
         
         logger.info("JobQueueWorker initialized with core threads: {}, max threads: {}", 
             maxConcurrentJobs, maxConcurrentJobs * 2);
     }
     
-    // Start the worker
     public void start() {
         if (running) {
             logger.warn("Job queue worker is already running");
@@ -58,10 +52,9 @@ public class JobQueueWorker {
         
         running = true;
         
-        // Schedule periodic job processing
         scheduler.scheduleWithFixedDelay(
             this::processQueue,
-            0, // Initial delay
+            0,
             pollingIntervalSeconds,
             TimeUnit.SECONDS
         );
@@ -70,7 +63,6 @@ public class JobQueueWorker {
             pollingIntervalSeconds, maxConcurrentJobs);
     }
     
-    // Stop worker gracefully
     public void stop() {
         if (!running) {
             return;
@@ -80,24 +72,20 @@ public class JobQueueWorker {
         
         logger.info("Stopping job queue worker...");
         
-        // Cancel all running jobs
         for (Future<?> future : runningJobs.values()) {
             future.cancel(true);
         }
         runningJobs.clear();
         
-        // Shutdown both thread pools
         scheduler.shutdown();
         processingPool.shutdown();
         
         try {
-            // Wait for scheduler to terminate
             if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
                 logger.warn("Scheduler did not terminate in time, forcing shutdown");
                 scheduler.shutdownNow();
             }
             
-            // Wait for processing pool to terminate
             if (!processingPool.awaitTermination(60, TimeUnit.SECONDS)) {
                 logger.warn("Processing pool did not terminate in time, forcing shutdown");
                 processingPool.shutdownNow();
@@ -117,22 +105,18 @@ public class JobQueueWorker {
         }
     }
     
-    // Check if worker is running
     public boolean isRunning() {
         return running && !scheduler.isShutdown();
     }
     
-    // Process job queue periodically with concurrency control
     private void processQueue() {
         if (!running) {
             return;
         }
         
         try {
-            // Clean up completed jobs
             runningJobs.entrySet().removeIf(entry -> entry.getValue().isDone());
             
-            // Check if we have capacity for more jobs
             int currentRunning = runningJobs.size();
             if (currentRunning >= maxConcurrentJobs) {
                 logger.debug("Max concurrent jobs ({}) reached, {} jobs currently running", 
@@ -140,18 +124,15 @@ public class JobQueueWorker {
                 return;
             }
             
-            // Get pending jobs from database
-            List<Job> pendingJobs = jobService.getPendingJobs();
+            List<Job> pendingJobs = jobService.getPendingJobsBySize();
             
             if (pendingJobs.isEmpty()) {
-                logger.debug("No pending jobs in queue");
                 return;
             }
             
             logger.info("Found {} pending jobs in queue, {} currently running", 
                 pendingJobs.size(), currentRunning);
             
-            // Process jobs up to the concurrent limit
             int jobsToSubmit = Math.min(pendingJobs.size(), maxConcurrentJobs - currentRunning);
             
             for (int i = 0; i < jobsToSubmit && i < pendingJobs.size(); i++) {
@@ -161,7 +142,6 @@ public class JobQueueWorker {
                 
                 Job job = pendingJobs.get(i);
                 
-                // Submit job with timeout
                 Future<?> future = processingPool.submit(() -> processJobWithTimeout(job));
                 runningJobs.put(job.getId(), future);
                 
@@ -174,7 +154,6 @@ public class JobQueueWorker {
         }
     }
     
-    // Process job with timeout wrapper
     private void processJobWithTimeout(Job job) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<?> future = executor.submit(() -> processJob(job));
@@ -205,14 +184,14 @@ public class JobQueueWorker {
         }
     }
     
-    // Process single job
     private void processJob(Job job) {
         int jobId = job.getId();
         
         try {
             logger.info("Processing job {}: {} ({})", jobId, job.getOriginalFilename(), job.getType());
             
-            // Process the job using JobService
+            Thread.sleep(300);
+            
             boolean success = jobService.processJob(jobId, outputDirectory);
             
             if (success) {
@@ -221,10 +200,23 @@ public class JobQueueWorker {
                 logger.error("Job {} failed", jobId);
             }
             
+        } catch (InterruptedException e) {
+            logger.warn("Job {} was interrupted during sleep", jobId);
+            Thread.currentThread().interrupt();
+            
+            try {
+                jobService.getJobDAO().updateJobStatus(
+                    jobId, 
+                    Job.JobStatus.FAILED, 
+                    "Worker interrupted: " + e.getMessage()
+                );
+            } catch (Exception ex) {
+                logger.error("Failed to update job status for interrupted job " + jobId, ex);
+            }
+            
         } catch (Exception e) {
             logger.error("Error processing job " + jobId, e);
             
-            // Try to mark job as failed
             try {
                 jobService.getJobDAO().updateJobStatus(
                     jobId, 
@@ -237,9 +229,6 @@ public class JobQueueWorker {
         }
     }
     
-    /**
-     * Get current queue statistics
-     */
     public QueueStats getStats() {
         try {
             int pendingCount = jobService.getPendingJobs().size();
@@ -253,9 +242,6 @@ public class JobQueueWorker {
         }
     }
     
-    /**
-     * Queue statistics
-     */
     public static class QueueStats {
         private final int pendingJobs;
         private final int processingJobs;

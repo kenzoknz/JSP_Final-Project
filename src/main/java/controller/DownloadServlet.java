@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-// Download converted PDF files
 @WebServlet(name = "DownloadServlet", urlPatterns = {"/download"})
 public class DownloadServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
@@ -35,7 +34,6 @@ public class DownloadServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Check if user is logged in
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please login to download files");
@@ -53,7 +51,6 @@ public class DownloadServlet extends HttpServlet {
         try {
             int jobId = Integer.parseInt(jobIdStr);
             
-            // Get job from database
             Job job = jobService.getJob(jobId);
             
             if (job == null) {
@@ -62,21 +59,18 @@ public class DownloadServlet extends HttpServlet {
                 return;
             }
             
-            // Security check - verify job belongs to user
             if (job.getUserId() != user.getId()) {
                 logger.warn("Unauthorized download attempt: Job {} by user {}", jobId, user.getId());
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "You don't have permission to download this file");
                 return;
             }
             
-            // Check if job is completed
             if (job.getStatus() != Job.JobStatus.COMPLETED) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, 
                     "File is not ready. Current status: " + job.getStatus().getValue());
                 return;
             }
             
-            // Check if output file exists
             String filePath = job.getOutputPath();
             if (filePath == null || filePath.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Output file path not found");
@@ -85,21 +79,17 @@ public class DownloadServlet extends HttpServlet {
             
             Path file = Paths.get(filePath);
             
-            // Check if file exists
             if (!Files.exists(file)) {
                 logger.warn("File not found: {} for job {}", filePath, jobId);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found on server");
                 return;
             }
             
-            // Get file info
             long fileSize = Files.size(file);
             String mimeType = "application/pdf";
             
-            // Generate download filename from original filename
             String downloadFileName = job.getOriginalFilename();
             if (downloadFileName != null) {
-                // Replace extension with .pdf
                 int lastDot = downloadFileName.lastIndexOf('.');
                 if (lastDot > 0) {
                     downloadFileName = downloadFileName.substring(0, lastDot) + ".pdf";
@@ -110,7 +100,6 @@ public class DownloadServlet extends HttpServlet {
                 downloadFileName = "converted_" + jobId + ".pdf";
             }
             
-            // Set response headers
             response.setContentType(mimeType);
             response.setContentLengthLong(fileSize);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + downloadFileName + "\"");
@@ -118,7 +107,6 @@ public class DownloadServlet extends HttpServlet {
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Expires", "0");
             
-            // Stream file to response
             try (InputStream inputStream = Files.newInputStream(file);
                  OutputStream outputStream = response.getOutputStream()) {
                 
@@ -147,7 +135,6 @@ public class DownloadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Redirect POST requests to GET
         doGet(request, response);
     }
 }

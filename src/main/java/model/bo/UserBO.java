@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public class UserBO {
     private static final Logger logger = LoggerFactory.getLogger(UserBO.class);
@@ -16,25 +15,6 @@ public class UserBO {
 
     public UserBO() {
         this.userDAO = new UserDAO();
-    }
-
-    public List<User> getAllUsers() {
-        logger.debug("Business layer: Getting all users");
-
-        List<User> users = userDAO.listAll();
-
-        logger.info("Business layer: Retrieved {} users", users.size());
-        return users;
-    }
-
-    public User getUserById(int userId) {
-        if (userId <= 0) {
-            logger.warn("Business layer: Invalid user ID: {}", userId);
-            return null;
-        }
-
-        logger.debug("Business layer: Getting user by ID: {}", userId);
-        return userDAO.findById(userId);
     }
 
     public User getUserByEmail(String email) {
@@ -48,10 +28,6 @@ public class UserBO {
     }
 
     public String createUser(String username, String email, String password) {
-        return createUser(username, email, password, "user");
-    }
-    
-    public String createUser(String username, String email, String password, String role) {
         logger.debug("Business layer: Creating user: {}", email);
 
         String validationError = validateUserInput(username, email, password);
@@ -73,106 +49,17 @@ public class UserBO {
         }
 
         User user = new User(username, email, hashedPassword);
-        
-        // Set role if provided, default to "user"
-        if (role != null && !role.trim().isEmpty()) {
-            user.setRole(role.trim().toLowerCase());
-        } else {
-            user.setRole("user");
-        }
+        user.setRole("user");
 
         int userId = userDAO.insert(user);
 
         if (userId > 0) {
-            logger.info("Business layer: User created successfully with ID: {} and role: {}", userId, user.getRole());
+            logger.info("Business layer: User created successfully with ID: {}", userId);
             return "SUCCESS";
         } else {
             logger.error("Business layer: Failed to create user: {}", email);
             return "Failed to create user. Please try again.";
         }
-    }
-
-    public String updateUser(int userId, String username, String email, String password) {
-        return updateUser(userId, username, email, password, null);
-    }
-    
-    public String updateUser(int userId, String username, String email, String password, String role) {
-        logger.debug("Business layer: Updating user ID: {}", userId);
-
-        User existingUser = userDAO.findById(userId);
-        if (existingUser == null) {
-            return "User not found";
-        }
-
-        String validationError = validateUserInputForUpdate(username, email, password);
-        if (validationError != null) {
-            return validationError;
-        }
-
-        User userWithEmail = userDAO.findByEmail(email);
-        if (userWithEmail != null && userWithEmail.getId() != userId) {
-            return "Email already exists for another user";
-        }
-
-        User userWithUsername = userDAO.findByUsername(username);
-        if (userWithUsername != null && userWithUsername.getId() != userId) {
-            return "Username already exists for another user";
-        }
-
-        existingUser.setUsername(username);
-        existingUser.setEmail(email);
-
-        if (password != null && !password.trim().isEmpty()) {
-            String hashedPassword = hashPassword(password);
-            if (hashedPassword == null) {
-                return "Password processing failed";
-            }
-            existingUser.setPasswordHash(hashedPassword);
-        }
-        
-        if (role != null && ("admin".equals(role) || "user".equals(role))) {
-            existingUser.setRole(role);
-        }
-
-        boolean updated = userDAO.update(existingUser);
-
-        if (updated) {
-            logger.info("Business layer: User updated successfully: ID {}", userId);
-            return "SUCCESS";
-        } else {
-            logger.error("Business layer: Failed to update user: ID {}", userId);
-            return "Failed to update user. Please try again.";
-        }
-    }
-
-    public boolean deleteUser(int userId) {
-        logger.debug("Business layer: Deleting user ID: {}", userId);
-
-        if (userId <= 0) {
-            logger.warn("Business layer: Invalid user ID for deletion: {}", userId);
-            return false;
-        }
-
-        User user = userDAO.findById(userId);
-        if (user == null) {
-            logger.warn("Business layer: User not found for deletion: ID {}", userId);
-            return false;
-        }
-
-        if ("admin".equalsIgnoreCase(user.getUsername())) {
-            logger.warn("Business layer: Attempted to delete admin user: ID {}", userId);
-            return false;
-        }
-
-        boolean deleted = userDAO.delete(userId);
-
-        if (deleted) {
-            logger.info("Business layer: User deleted successfully: ID {}", userId);
-        } else {
-            logger.error("Business layer: Failed to delete user: ID {}", userId);
-        }
-
-        return deleted;
     }
 
     public User authenticateUser(String usernameOrEmail, String password) {
@@ -199,12 +86,6 @@ public class UserBO {
         }
 
         return user;
-    }
-
-    public int getUserCount() {
-        int count = userDAO.getUserCount();
-        logger.debug("Business layer: Total user count: {}", count);
-        return count;
     }
 
     private String validateUserInput(String username, String email, String password) {
@@ -238,40 +119,6 @@ public class UserBO {
 
         if (password.length() > 100) {
             return "Password must be less than 100 characters";
-        }
-
-        return null;
-    }
-
-    private String validateUserInputForUpdate(String username, String email, String password) {
-        if (username == null || username.trim().isEmpty()) {
-            return "Username is required";
-        }
-
-        if (username.length() < 3 || username.length() > 50) {
-            return "Username must be between 3 and 50 characters";
-        }
-
-        if (!isValidUsername(username)) {
-            return "Username can only contain letters, numbers, and underscores";
-        }
-
-        if (email == null || email.trim().isEmpty()) {
-            return "Email is required";
-        }
-
-        if (!isValidEmail(email)) {
-            return "Invalid email format";
-        }
-
-        if (password != null && !password.trim().isEmpty()) {
-            if (password.length() < 6) {
-                return "Password must be at least 6 characters long";
-            }
-
-            if (password.length() > 100) {
-                return "Password must be less than 100 characters";
-            }
         }
 
         return null;

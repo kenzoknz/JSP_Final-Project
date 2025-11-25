@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-// Display user conversion job history
 @WebServlet(name = "JobServlet", urlPatterns = {"/jobs"})
 public class JobServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(JobServlet.class);
@@ -41,21 +40,17 @@ public class JobServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         try {
-            // Get all jobs for this user
             List<Job> jobs = jobService.getUserJobs(user.getId());
             
             logger.info("Retrieved {} jobs for user {}", jobs.size(), user.getId());
             
-            // Set attributes for JSP
             request.setAttribute("jobs", jobs);
             
-            // Check for success message
             String message = request.getParameter("message");
             if (message != null && !message.isEmpty()) {
                 request.setAttribute("success", message);
             }
             
-            // Forward to jobs page
             request.getRequestDispatcher("/myJobs.jsp").forward(request, response);
             
         } catch (Exception e) {
@@ -79,7 +74,6 @@ public class JobServlet extends HttpServlet {
         
         String action = request.getParameter("action");
         
-        // Handle job cancellation
         if ("cancel".equals(action)) {
             String jobIdStr = request.getParameter("jobId");
             
@@ -90,7 +84,6 @@ public class JobServlet extends HttpServlet {
                     // Verify job belongs to user
                     Job job = jobService.getJob(jobId);
                     if (job != null && job.getUserId() == user.getId()) {
-                        // Only allow canceling PENDING jobs
                         if (job.getStatus() == Job.JobStatus.PENDING) {
                             boolean cancelled = jobService.cancelJob(jobId);
                             
@@ -117,7 +110,6 @@ public class JobServlet extends HttpServlet {
             return;
         }
         
-        // Handle job deletion
         if ("delete".equals(action)) {
             String jobIdStr = request.getParameter("jobId");
             
@@ -148,7 +140,6 @@ public class JobServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/jobs");
             }
         } else {
-            // Default to GET behavior
             doGet(request, response);
         }
     }

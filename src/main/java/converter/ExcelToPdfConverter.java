@@ -14,19 +14,15 @@ import util.VietnameseFontLoader;
 import java.io.*;
 import java.text.DecimalFormat;
 
-// Convert Excel to PDF with Vietnamese support - Optimized for large files
 public class ExcelToPdfConverter {
     private static final Logger logger = LoggerFactory.getLogger(ExcelToPdfConverter.class);
     
-    // Increase POI byte array max size to handle large files (200MB)
     static {
-        IOUtils.setByteArrayMaxOverride(200 * 1024 * 1024); // 200 MB
+        IOUtils.setByteArrayMaxOverride(200 * 1024 * 1024);
     }
     
-    // Limit for very large Excel files
     private static final int MAX_ROWS_PER_SHEET = 5000;
     
-    // Page settings
     private static final float PAGE_WIDTH = PDRectangle.A4.getWidth();
     private static final float PAGE_HEIGHT = PDRectangle.A4.getHeight();
     private static final float MARGIN = 40;
@@ -36,7 +32,6 @@ public class ExcelToPdfConverter {
     
     private final DecimalFormat numberFormat = new DecimalFormat("#,##0.##");
     
-    // Convert XLSX file to PDF - Optimized version
     public void convert(String inputPath, String outputPath) throws IOException {
         logger.info("Starting optimized Excel to PDF conversion: {} -> {}", inputPath, outputPath);
         long startTime = System.currentTimeMillis();
@@ -46,15 +41,12 @@ public class ExcelToPdfConverter {
             throw new IOException("Input file not found: " + inputPath);
         }
         
-        // Use buffered stream for better I/O performance
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(inputFile), 64 * 1024);
              Workbook workbook = WorkbookFactory.create(bis);
              PDDocument pdf = new PDDocument()) {
             
-            // Load Vietnamese-compatible font
             PDType0Font font = VietnameseFontLoader.loadVietnameseFont(pdf);
             
-            // Process each sheet
             int numberOfSheets = workbook.getNumberOfSheets();
             logger.info("Found {} sheets in Excel file", numberOfSheets);
             
@@ -63,14 +55,12 @@ public class ExcelToPdfConverter {
                 String sheetName = sheet.getSheetName();
                 logger.info("Processing sheet: {}", sheetName);
                 
-                // Add page for sheet
                 PDPage page = new PDPage(PDRectangle.A4);
                 pdf.addPage(page);
                 
                 PDPageContentStream contentStream = new PDPageContentStream(pdf, page);
                 float yPosition = PAGE_HEIGHT - MARGIN;
                 
-                // Write sheet name as header (sanitize to remove control characters)
                 contentStream.beginText();
                 contentStream.setFont(font, FONT_SIZE + 2);
                 contentStream.newLineAtOffset(MARGIN, yPosition);
@@ -80,18 +70,15 @@ public class ExcelToPdfConverter {
                 
                 yPosition -= ROW_HEIGHT * 1.5f;
                 
-                // Determine number of columns (from first row)
                 Row firstRow = sheet.getRow(sheet.getFirstRowNum());
                 int maxColumns = 0;
                 if (firstRow != null) {
                     maxColumns = firstRow.getLastCellNum();
                 }
                 
-                // Calculate column width
                 float availableWidth = PAGE_WIDTH - 2 * MARGIN;
                 float columnWidth = maxColumns > 0 ? availableWidth / maxColumns : availableWidth;
                 
-                // Process rows with limit for very large files
                 int rowCount = 0;
                 int totalRows = sheet.getLastRowNum() - sheet.getFirstRowNum() + 1;
                 logger.info("Sheet '{}' has {} rows", sheetName, totalRows);
@@ -99,19 +86,16 @@ public class ExcelToPdfConverter {
                 for (Row row : sheet) {
                     if (row == null) continue;
                     
-                    // Limit rows for very large Excel files to prevent memory issues
                     rowCount++;
                     if (rowCount > MAX_ROWS_PER_SHEET) {
                         logger.warn("Reached max row limit ({}) for sheet '{}', truncating...", MAX_ROWS_PER_SHEET, sheetName);
                         break;
                     }
                     
-                    // Log progress for large sheets
                     if (totalRows > 200 && rowCount % 100 == 0) {
                         logger.info("Processing row {}/{} in sheet '{}'", rowCount, Math.min(totalRows, MAX_ROWS_PER_SHEET), sheetName);
                     }
                     
-                    // Check if we need a new page
                     if (yPosition < MARGIN + ROW_HEIGHT) {
                         contentStream.close();
                         page = new PDPage(PDRectangle.A4);
@@ -120,17 +104,14 @@ public class ExcelToPdfConverter {
                         yPosition = PAGE_HEIGHT - MARGIN;
                     }
                     
-                    // Draw row
                     float xPosition = MARGIN;
                     
                     for (int colIndex = 0; colIndex < maxColumns; colIndex++) {
                         Cell cell = row.getCell(colIndex);
                         String cellValue = getCellValueAsString(cell);
                         
-                        // Truncate if too long
                         String displayValue = truncateText(cellValue, font, FONT_SIZE, columnWidth - 2 * CELL_PADDING);
                         
-                        // Draw cell text (sanitize to remove control characters)
                         contentStream.beginText();
                         contentStream.setFont(font, FONT_SIZE);
                         contentStream.newLineAtOffset(xPosition + CELL_PADDING, yPosition);
@@ -147,7 +128,6 @@ public class ExcelToPdfConverter {
                 contentStream.close();
             }
             
-            // Save PDF
             File outputFile = new File(outputPath);
             outputFile.getParentFile().mkdirs();
             pdf.save(outputFile);
@@ -157,7 +137,6 @@ public class ExcelToPdfConverter {
         }
     }
     
-    // Extract cell value as string, remove control chars
     private String getCellValueAsString(Cell cell) {
         if (cell == null) {
             return "";
@@ -202,11 +181,9 @@ public class ExcelToPdfConverter {
                 value = "";
         }
         
-        // Remove all control characters before returning
         return value.replaceAll("\\p{Cntrl}", " ");
     }
     
-    // Truncate text to fit width
     private String truncateText(String text, PDType0Font font, float fontSize, float maxWidth) throws IOException {
         if (text == null || text.isEmpty()) {
             return "";
@@ -218,7 +195,6 @@ public class ExcelToPdfConverter {
             return text;
         }
         
-        // Truncate with ellipsis
         String ellipsis = "...";
         float ellipsisWidth = font.getStringWidth(ellipsis) / 1000 * fontSize;
         float targetWidth = maxWidth - ellipsisWidth;

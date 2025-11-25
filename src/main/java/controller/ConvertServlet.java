@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-// Handle file upload and PDF conversion
 @WebServlet(name = "ConvertServlet", urlPatterns = {"/convert"})
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2 MB
@@ -31,7 +30,6 @@ import java.util.UUID;
 public class ConvertServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ConvertServlet.class);
     
-    // Upload and output directories
     private static final String UPLOAD_DIR = "uploads";
     private static final String OUTPUT_DIR = "converted";
     
@@ -44,7 +42,6 @@ public class ConvertServlet extends HttpServlet {
         jobService = new JobService();
         converterService = new FileConverterService();
         
-        // Create upload and output directories if they don't exist
         createDirectoryIfNotExists(UPLOAD_DIR);
         createDirectoryIfNotExists(OUTPUT_DIR);
     }
@@ -59,7 +56,6 @@ public class ConvertServlet extends HttpServlet {
             return;
         }
         
-        // Show the upload form
         request.getRequestDispatcher("/submit.jsp").forward(request, response);
     }
     
@@ -76,7 +72,6 @@ public class ConvertServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         
         try {
-            // Get uploaded file
             Part filePart = request.getPart("file");
             if (filePart == null || filePart.getSize() == 0) {
                 request.setAttribute("error", "Please select a file to convert");
@@ -91,7 +86,6 @@ public class ConvertServlet extends HttpServlet {
                 return;
             }
             
-            // Validate file type
             String fileType = converterService.getFileType(fileName);
             if (!converterService.isFileTypeSupported(fileType)) {
                 request.setAttribute("error", "Unsupported file type. Please upload DOCX, XLSX, or TXT files only.");
@@ -99,16 +93,13 @@ public class ConvertServlet extends HttpServlet {
                 return;
             }
             
-            // Generate unique file names
             String uniqueId = UUID.randomUUID().toString();
             String uniqueFileName = uniqueId + "_" + fileName;
             
-            // Define file paths
             String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
             
             String inputFilePath = uploadPath + File.separator + uniqueFileName;
             
-            // Save uploaded file
             try (InputStream inputStream = filePart.getInputStream();
                  FileOutputStream outputStream = new FileOutputStream(inputFilePath)) {
                 
@@ -121,11 +112,9 @@ public class ConvertServlet extends HttpServlet {
             
             logger.info("File uploaded: {} for user {}", uniqueFileName, user.getId());
             
-            // Create job in database with PENDING status (will be processed by background worker)
             Job job = jobService.createJob(user.getId(), inputFilePath, fileName, filePart.getSize());
             
             if (job == null) {
-                // Return JSON error response
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to create conversion job\"}");
@@ -134,7 +123,6 @@ public class ConvertServlet extends HttpServlet {
             
             logger.info("Job queued successfully: {} for user {}", job.getId(), user.getId());
             
-            // Return JSON success response with job ID
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(String.format(
@@ -150,7 +138,6 @@ public class ConvertServlet extends HttpServlet {
         }
     }
     
-    // Extract filename from part
     private String getFileName(Part part) {
         String contentDisposition = part.getHeader("content-disposition");
         if (contentDisposition == null) {
@@ -160,7 +147,6 @@ public class ConvertServlet extends HttpServlet {
         for (String token : contentDisposition.split(";")) {
             if (token.trim().startsWith("filename")) {
                 String fileName = token.substring(token.indexOf('=') + 1).trim();
-                // Remove quotes if present
                 if (fileName.startsWith("\"") && fileName.endsWith("\"")) {
                     fileName = fileName.substring(1, fileName.length() - 1);
                 }
@@ -170,7 +156,6 @@ public class ConvertServlet extends HttpServlet {
         return null;
     }
     
-    // Create directory if needed
     private void createDirectoryIfNotExists(String dirName) {
         try {
             String fullPath = getServletContext().getRealPath("") + File.separator + dirName;

@@ -10,14 +10,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object for Job entity
- * Handles all database operations for jobs table
- */
 public class JobDAO {
     private static final Logger logger = LoggerFactory.getLogger(JobDAO.class);
     
-    // SQL Queries
     private static final String INSERT_JOB = 
         "INSERT INTO jobs (user_id, type, status, input_path, original_filename, file_size, created_at) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -40,15 +35,15 @@ public class JobDAO {
     private static final String SELECT_JOBS_BY_STATUS = 
         "SELECT * FROM jobs WHERE status = ? ORDER BY created_at DESC";
         
+    private static final String SELECT_PENDING_JOBS_BY_SIZE = 
+        "SELECT * FROM jobs WHERE status = 'PENDING' ORDER BY file_size ASC, created_at ASC";
+        
     private static final String DELETE_JOB = 
         "DELETE FROM jobs WHERE id = ?";
         
     private static final String COUNT_JOBS_BY_USER = 
         "SELECT COUNT(*) FROM jobs WHERE user_id = ?";
 
-    /**
-     * Create a new job record in database
-     */
     public boolean createJob(Job job) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT_JOB, Statement.RETURN_GENERATED_KEYS)) {
@@ -64,7 +59,6 @@ public class JobDAO {
             int affectedRows = stmt.executeUpdate();
             
             if (affectedRows > 0) {
-                // Get the generated ID
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         job.setId(generatedKeys.getInt(1));
@@ -80,9 +74,6 @@ public class JobDAO {
         return false;
     }
 
-    /**
-     * Update job status and timestamps
-     */
     public boolean updateJobStatus(int jobId, JobStatus status, String errorMessage) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE_JOB_STATUS)) {
@@ -91,11 +82,11 @@ public class JobDAO {
             
             Timestamp now = new Timestamp(System.currentTimeMillis());
             if (status == JobStatus.IN_PROGRESS) {
-                stmt.setTimestamp(2, now);  // started_at
-                stmt.setNull(3, Types.TIMESTAMP);  // finished_at
+                stmt.setTimestamp(2, now);
+                stmt.setNull(3, Types.TIMESTAMP);
             } else if (status == JobStatus.COMPLETED || status == JobStatus.FAILED) {
-                stmt.setNull(2, Types.TIMESTAMP);  // started_at (keep existing)
-                stmt.setTimestamp(3, now);  // finished_at
+                stmt.setNull(2, Types.TIMESTAMP);
+                stmt.setTimestamp(3, now);
             } else {
                 stmt.setNull(2, Types.TIMESTAMP);
                 stmt.setNull(3, Types.TIMESTAMP);
@@ -114,9 +105,6 @@ public class JobDAO {
         }
     }
 
-    /**
-     * Update job output path when conversion is completed
-     */
     public boolean updateJobOutputPath(int jobId, String outputPath) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE_JOB_OUTPUT_PATH)) {
@@ -134,9 +122,6 @@ public class JobDAO {
         }
     }
 
-    /**
-     * Get job by ID
-     */
     public Job getJobById(int jobId) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(SELECT_JOB_BY_ID)) {
@@ -155,9 +140,6 @@ public class JobDAO {
         return null;
     }
 
-    /**
-     * Get all jobs for a specific user
-     */
     public List<Job> getJobsByUserId(int userId) {
         List<Job> jobs = new ArrayList<>();
         
@@ -179,9 +161,6 @@ public class JobDAO {
         return jobs;
     }
 
-    /**
-     * Get all jobs (for admin)
-     */
     public List<Job> getAllJobs() {
         List<Job> jobs = new ArrayList<>();
         
@@ -200,9 +179,6 @@ public class JobDAO {
         return jobs;
     }
 
-    /**
-     * Get jobs by status
-     */
     public List<Job> getJobsByStatus(JobStatus status) {
         List<Job> jobs = new ArrayList<>();
         
@@ -224,9 +200,24 @@ public class JobDAO {
         return jobs;
     }
 
-    /**
-     * Delete a job
-     */
+    public List<Job> getPendingJobsBySize() {
+        List<Job> jobs = new ArrayList<>();
+        
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_PENDING_JOBS_BY_SIZE);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                jobs.add(mapResultSetToJob(rs));
+            }
+            
+        } catch (SQLException e) {
+            logger.error("Error getting pending jobs by size", e);
+        }
+        
+        return jobs;
+    }
+
     public boolean deleteJob(int jobId) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(DELETE_JOB)) {
@@ -243,9 +234,6 @@ public class JobDAO {
         }
     }
 
-    /**
-     * Count jobs by user
-     */
     public int countJobsByUser(int userId) {
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(COUNT_JOBS_BY_USER)) {
@@ -265,9 +253,6 @@ public class JobDAO {
         return 0;
     }
 
-    /**
-     * Helper method to map ResultSet to Job object
-     */
     private Job mapResultSetToJob(ResultSet rs) throws SQLException {
         Job job = new Job();
         

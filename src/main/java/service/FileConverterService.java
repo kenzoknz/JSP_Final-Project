@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-// Service for orchestrating file conversion to PDF
 public class FileConverterService {
     private static final Logger logger = LoggerFactory.getLogger(FileConverterService.class);
     
@@ -22,7 +21,6 @@ public class FileConverterService {
         this.textConverter = new TextToPdfConverter();
     }
     
-    // Convert file to PDF based on type
     public void convertToPdf(String inputPath, String outputPath, String fileType) throws IOException {
         logger.info("Converting {} file to PDF: {}", fileType, inputPath);
         
@@ -52,7 +50,6 @@ public class FileConverterService {
         logger.info("Successfully converted {} to PDF: {}", fileType, outputPath);
     }
     
-    // Check if file type is supported
     public boolean isFileTypeSupported(String fileType) {
         String normalizedType = fileType.toLowerCase().trim();
         return normalizedType.equals("docx") || normalizedType.equals(".docx") ||
@@ -60,7 +57,6 @@ public class FileConverterService {
                normalizedType.equals("txt") || normalizedType.equals(".txt");
     }
     
-    // Get file type from filename
     public String getFileType(String filename) {
         if (filename == null || filename.isEmpty()) {
             return "";
